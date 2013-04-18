@@ -7,6 +7,11 @@ sdafadf
 adfdsaf
 adfas*/
 
+class herp
+{
+
+};
+
 int main()
 {
     cout << "Do dziela!!!" << endl;         //wywietla cos
