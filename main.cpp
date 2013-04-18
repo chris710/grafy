@@ -8,6 +8,9 @@ using namespace std;
 
 
 //          DO ZROBIENIA:
+//
+//      NAJPIERW MA BYĆ MACIERZ SĄSIEDZTWA!!! RESZTĄ SIĘ ZBYTNIO NIE PRZEJMUJ, BO I TAK BĘDZIE TRZEBA JĄ WYWALIĆ/ZMODYFIKOWAĆ
+//
 //  1)  coś do sprawdzania czy graf jest acykliczny
 //  2)  macierz sąsiedztwa
 //  3)  lista krawędzi zapisana jako tabela
@@ -44,6 +47,10 @@ int main()                                                              //main
         cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczbę danych
         cin>>liczba;
 
+
+
+
+        //TO POD SPODEM NA PÓŹNIEJ, BO NIE DA SIĘ ZROBIĆ W TEN SPOSÓB GRAFU ACYKLICZNEGO, NAJPIERW MACIERZ
         vertex* pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
 
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
