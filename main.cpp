@@ -1,6 +1,7 @@
 #include<iostream>
 #include<stdlib>
 #include<list>              //w końcu działamy na listach c'nie?
+#include<time.h>            //do liczb pseudolosowych
 
 using namespace std;
 
@@ -16,7 +17,7 @@ using namespace std;
 
 
 
-struct vertex                                                           //struktura wierzchołka grafu dla listy następników (ta pierwsza pozycja)
+struct vertex                                                           //struktura wierzchołka grafu dla listy następników (pierwsza pozycja)
 {
     int id;             //"numer" wierzchołka
     vertex* next;       //wskaźnik na sąsiada
@@ -30,13 +31,15 @@ struct vneigh                                                           //"verte
 
 int main()                                                              //main
 {
+    srand(NULL);
+
     int liczba;         //liczba wierzchołków w tworzonym grafie
     bool dalej=true;    //flaga dla pętli programu; jeżeli staje się false to program zostaje przerwany
 
 
     while (dalej)       //pętla programu, dzięki temu można wykonać parę operacji bez wielokrotnego włączania programu
     {
-        cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczę danych
+        cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczbę danych
         cin>>liczba;
 
         vertex pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
@@ -44,10 +47,17 @@ int main()                                                              //main
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
         {
             pierwszy[i].id=i;       //każdy wierzchołek dostaje własne id (lecą po kolei od 0)
-            pierwszy[i].next=NULL;  //chwilowo nie robimy żadnych krawędzi
+            pierwszy[i].next=NULL;  //chwilowo nie robimy żadnych krawędzi/łuków
         }
 
-
+        for(int i=0;i<liczba );i++)       //dodajemy łuki dla każdego wierzchołka       //DO POPRAWY
+        {
+            for(int j=0;j<(liczba/2);j++)     //każdy vertex ma po (liczba/2) łuków
+            {
+                pierwszy[i].next= new vneigh;        //tworzymy nową pozycję na liście następników
+                pierwszy[i].next->next=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
+            }
+        }
     }
 
 
