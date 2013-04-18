@@ -1,5 +1,5 @@
 #include<iostream>
-#include<stdlib>
+#include <cstdlib>
 #include<list>              //w końcu działamy na listach c'nie?
 #include<time.h>            //do liczb pseudolosowych
 
@@ -16,16 +16,18 @@ using namespace std;
 //  6)  pętelka mierząca czas dla 10 wartości "liczba"
 
 
+//to niestety musi iść pierwsze choć wiem, że to nielogiczne trochę :(
+struct vneigh;                                                          //"vertex neighbour" czyli kolejne pozycje na liście następników
 
 struct vertex                                                           //struktura wierzchołka grafu dla listy następników (pierwsza pozycja)
 {
     int id;             //"numer" wierzchołka
-    vertex* next;       //wskaźnik na sąsiada
+    vneigh* next;       //wskaźnik na sąsiada
 };
 
 struct vneigh                                                           //"vertex neighbour" czyli kolejne pozycje na liście następników
 {
-    int id;             //numer sąsiada
+    vertex* id;         //wskaźnik na numer sąsiada
     vneigh* next;       //wskaźnik na kolejnego sąsiada
 };
 
@@ -42,7 +44,7 @@ int main()                                                              //main
         cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczbę danych
         cin>>liczba;
 
-        vertex pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
+        vertex* pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
 
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
         {
@@ -50,11 +52,11 @@ int main()                                                              //main
             pierwszy[i].next=NULL;  //chwilowo nie robimy żadnych krawędzi/łuków
         }
 
-        for(int i=0;i<liczba );i++)       //dodajemy łuki dla każdego wierzchołka       //DO POPRAWY
+        for(int i=0;i<liczba;i++)       //dodajemy łuki dla każdego wierzchołka       //DO POPRAWY
         {
             pierwszy[i].next= new vneigh;        //tworzymy nową pozycję na liście następników
             //tutaj sprawdzić czy nie wylosował siebie samego
-            pierwszy[i].next=&pierwszy[rand()%liczba];            //dodajemy pierwszy łuk do losowego wierzchołka,
+            pierwszy[i].next->id=&pierwszy[rand()%liczba];            //dodajemy pierwszy łuk do losowego wierzchołka,
                                                                         //ten musi być aby graf był spójny
             vneigh* nnext=pierwszy[i].next->next;       //wskaźnik na następnik sąsiada
 
@@ -62,7 +64,7 @@ int main()                                                              //main
             {
                 nnext= new vneigh;        //tworzymy nową pozycję na liście następników
                 //tutaj wsadzić sprawdzenie czy połącznia przypadkiem już nie ma
-                nnext=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
+                nnext->id=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
                 nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
             }
         }
