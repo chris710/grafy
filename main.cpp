@@ -52,10 +52,18 @@ int main()                                                              //main
 
         for(int i=0;i<liczba );i++)       //dodajemy łuki dla każdego wierzchołka       //DO POPRAWY
         {
-            for(int j=0;j<(liczba/2);j++)     //każdy vertex ma po (liczba/2) łuków
+            pierwszy[i].next= new vneigh;        //tworzymy nową pozycję na liście następników
+            //tutaj sprawdzić czy nie wylosował siebie samego
+            pierwszy[i].next=&pierwszy[rand()%liczba];            //dodajemy pierwszy łuk do losowego wierzchołka,
+                                                                        //ten musi być aby graf był spójny
+            vneigh* nnext=pierwszy[i].next->next;       //wskaźnik na następnik sąsiada
+
+            for(int j=0;j<( (liczba-1)/2 );j++)     //każdy vertex ma po (liczba/2) łuków
             {
-                pierwszy[i].next= new vneigh;        //tworzymy nową pozycję na liście następników
-                pierwszy[i].next->next=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
+                nnext= new vneigh;        //tworzymy nową pozycję na liście następników
+                //tutaj wsadzić sprawdzenie czy połącznia przypadkiem już nie ma
+                nnext=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
+                nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
             }
         }
     }
