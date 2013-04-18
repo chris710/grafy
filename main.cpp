@@ -2,14 +2,10 @@
 #include<stdlib>
 
 using namespace std;
-/*
-sdafadf
-adfdsaf
-adfas*/
 
 class herp
 {
-
+        //asdfgadfbdfbv
 };
 
 int main()
