@@ -30,7 +30,7 @@ struct vertex                                                           //strukt
 //i wracamy do określenia czym jest vneigh
 struct vneigh                                                           //"vertex neighbour" czyli kolejne pozycje na liście następników
 {
-    vertex* id;         //wskaźnik na numer sąsiada
+    vertex* id;         //wskaźnik na sąsiada
     vneigh* next;       //wskaźnik na kolejnego sąsiada
 };
 
@@ -52,6 +52,10 @@ int main()                                                              //main
 
 
         //vector<vector<bool> > graf(liczba,vector<bool>(liczba));      //tworzymy graf jako macierz liczba*liczba; jest to wektor w wektorze
+
+        ////////////////////////////////////////////////////////
+        //      MACIERZ SĄSIEDZTWA
+        ////////////////////////////////////////////////////////
 
         int **graf = new int*[liczba];                          //tworzymy graf jako macierz liczba*liczba
         for(int x=0;x<liczba;x++)
@@ -86,34 +90,42 @@ int main()                                                              //main
 
 
 
-
-        //to poniżej do modyfikacji aby odzwierciedlało graf z macierzy
+        ////////////////////////////////////////////////////////
+        //      LISTA NASTĘPNIKÓW
+        ////////////////////////////////////////////////////////
         vertex* pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
 
+        //generujemy pierwszą kolumnę wierszy; jest to potrzebne, aby mieć odwołania do wszystkich elementów grafu
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
         {
             pierwszy[i].id=i;       //każdy wierzchołek dostaje własne id (lecą po kolei od 0)
+            pierwszy[i].next=new vneigh;      //chwilowo nie robimy łuków
+        }
+
+        //dopiero teraz możemy zabrać się za robienie łuków
+        for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
+        {
             vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
 
             for(int j=0;j<liczba;j++)       //dodajemy łuki dla każdego wierzchołka
             {
-                if(graf[i][j])
+                if(graf[i][j])      //dodajemy łuk jeżeli jest połączenie
                 {
-                    nnext= new vneigh;        //tworzymy nową pozycję na liście następników
-                    nnext->id=&pierwszy[j];       //dodajemy łuk jeżeli jest połączenie
+                    nnext->id=&pierwszy[j];     //nadajemy wskaźnik na element, do którego idzie łuk
+                    nnext->next= new vneigh;        //tworzymy nową pozycję na liście następników
                     nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
                 }
-
             }
+            if(nnext) nnext->next=NULL;     //ostatni element nullujemy żeby nie robił rozpierduchy przy wypisywaniu
         }
 
         for(int i=0;i<liczba;i++)                   //wyświetlanie listy następników
         {
-            cout<<i<<"->";
+            cout<<i;
             vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
-            while(pierwszy[i].next!=NULL)
+            while(nnext->next!=NULL)
             {
-                cout<<&pierwszy[i].next->id<<"->";
+                cout<<"->"<<nnext->id->id;      //wypisuje wartość sąsiada
                 nnext=nnext->next;
             }
             cout<<endl;
@@ -122,9 +134,20 @@ int main()                                                              //main
 
 
         //zwalnianie pamięci
+        for (int x=0;x<liczba;x++)          //zwalniamy pamięć listy
+        {
+            vneigh* nnext=pierwszy[x].next;       //wskaźnik na sąsiada wierzchołka
+            while(nnext->next!=NULL)        //póki nie koniec listy usuwaj kolejne jej elementy od początku licząc
+            {                               //i tak z każdą listą aż do końca tablicy
+                vneigh* tmp=nnext;
+                nnext=nnext->next;
+                delete tmp;
+            }
+        }
+        delete [] pierwszy;
+
         for (int x=0;x<liczba;x++)          //zwalniamy pamięć po kolumnach tablicy
             delete [] graf[x];
-
         delete [] graf;                     //i w końcu cały graf
     }
 
