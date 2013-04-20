@@ -10,7 +10,7 @@ using namespace std;
 
 //          DO ZROBIENIA:
 //
-//  zmodyfikować listę następników aby odwzorowywała graf z macierzy
+//  wyświetlać listę następników
 //  3)  lista krawędzi zapisana jako tabela
 //  4)  sortowanie topologiczne (zgodnie z algorytmem przeszukiwania w głąb)
 //  5)  i magiczny zegarek mierzący ile to zajmuje
@@ -64,9 +64,9 @@ int main()                                                              //main
         {
             for(int j=0;j<liczba;j++)   //kolumna
             {
-                //graf jest acykliczny jeżeli macierz sąsiedztwa jest górnotrójkątna
+                //graf jest acykliczny i skierowany jeżeli macierz sąsiedztwa jest górnotrójkątna
                 if(i<j)    graf[i][j]=1;       //górny trójkąt ma same 1; dzięki temu graf jest spójny i spełnia warunki gęstości
-                else if(i==j)        //dla przekątnej wartości mogą być 0 lub 1
+                else if(i==j)        //dla przekątnej wartości mogą być 0 lub 1, bo są to pętle jednoelementowe
                 {
                     graf[i][j]=rand()%2;
                 }
@@ -93,40 +93,37 @@ int main()                                                              //main
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
         {
             pierwszy[i].id=i;       //każdy wierzchołek dostaje własne id (lecą po kolei od 0)
-            pierwszy[i].next=NULL;  //chwilowo nie robimy żadnych krawędzi/łuków
-        }
+            vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
 
-        for(int i=0;i<liczba;i++)       //dodajemy łuki dla każdego wierzchołka       //DO POPRAWY
-        {
-            pierwszy[i].next= new vneigh;        //tworzymy nową pozycję na liście następników
-            //tutaj sprawdzić czy nie wylosował siebie samego
-            pierwszy[i].next->id=&pierwszy[rand()%liczba];            //dodajemy pierwszy łuk do losowego wierzchołka,
-                                                                        //ten musi być aby graf był spójny
-            vneigh* nnext=pierwszy[i].next->next;       //wskaźnik na następnik sąsiada
-
-            for(int j=0;j<( (liczba-1)/2 );j++)     //każdy vertex ma po (liczba/2) łuków
+            for(int j=0;j<liczba;j++)       //dodajemy łuki dla każdego wierzchołka
             {
-                nnext= new vneigh;        //tworzymy nową pozycję na liście następników
-                //tutaj wsadzić sprawdzenie czy połącznia przypadkiem już nie ma
-                nnext->id=&pierwszy[rand()%liczba];     //dodajemy łuk do losowego wierzchołka
-                nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
+                if(graf[i][j])
+                {
+                    nnext= new vneigh;        //tworzymy nową pozycję na liście następników
+                    nnext->id=&pierwszy[j];       //dodajemy łuk jeżeli jest połączenie
+                    nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
+                }
+
             }
         }
 
+        for(int i=0;i<liczba;i++)                   //wyświetlanie listy następników
+        {
+            cout<<i<<"->";
+            vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
+            while(pierwszy[i].next!=NULL)
+            {
+                cout<<&pierwszy[i].next->id<<"->";
+                nnext=nnext->next;
+            }
+            cout<<endl;
 
-
-
-
-
-
-
-
-
+        }
 
 
         //zwalnianie pamięci
         for (int x=0;x<liczba;x++)          //zwalniamy pamięć po kolumnach tablicy
-        delete [] graf[x];
+            delete [] graf[x];
 
         delete [] graf;                     //i w końcu cały graf
     }
