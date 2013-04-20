@@ -1,5 +1,6 @@
 #include<iostream>
-#include <cstdlib>
+#include<cstdlib>
+//#include<vector>            //do macierzy sąsiedztwa      //walić to, zrobimy to na tablicy
 #include<list>              //w końcu działamy na listach c'nie?
 #include<time.h>            //do liczb pseudolosowych
 
@@ -11,8 +12,7 @@ using namespace std;
 //
 //      NAJPIERW MA BYĆ MACIERZ SĄSIEDZTWA!!! RESZTĄ SIĘ ZBYTNIO NIE PRZEJMUJ, BO I TAK BĘDZIE TRZEBA JĄ WYWALIĆ/ZMODYFIKOWAĆ
 //
-//  1)  coś do sprawdzania czy graf jest acykliczny
-//  2)  macierz sąsiedztwa
+//  przydałoby się jakoś ustalić gęstość grafu na 50% a nei losowo jak jest teraz
 //  3)  lista krawędzi zapisana jako tabela
 //  4)  sortowanie topologiczne (zgodnie z algorytmem przeszukiwania w głąb)
 //  5)  i magiczny zegarek mierzący ile to zajmuje
@@ -22,17 +22,22 @@ using namespace std;
 //to niestety musi iść pierwsze choć wiem, że to nielogiczne trochę :(
 struct vneigh;                                                          //"vertex neighbour" czyli kolejne pozycje na liście następników
 
+//teraz dopiero można zająć się tym co trzeba
 struct vertex                                                           //struktura wierzchołka grafu dla listy następników (pierwsza pozycja)
 {
     int id;             //"numer" wierzchołka
     vneigh* next;       //wskaźnik na sąsiada
 };
 
+//i wracamy do określenia czym jest vneigh
 struct vneigh                                                           //"vertex neighbour" czyli kolejne pozycje na liście następników
 {
     vertex* id;         //wskaźnik na numer sąsiada
     vneigh* next;       //wskaźnik na kolejnego sąsiada
 };
+
+
+
 
 int main()                                                              //main
 {
@@ -46,6 +51,38 @@ int main()                                                              //main
     {
         cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczbę danych
         cin>>liczba;
+
+
+        //vector<vector<bool> > graf(liczba,vector<bool>(liczba));      //tworzymy graf jako macierz liczba*liczba; jest to wektor w wektorze
+
+        int **graf = new int*[liczba];                          //tworzymy graf jako macierz liczba*liczba
+        for(int x=0;x<liczba;x++)
+        {
+            graf[x]=new int[liczba];            //jest to dynamiczna tablica
+        }
+
+        //zapełnianie macierzy losowymi danymi
+        for(int i=0;i<liczba;i++)       //rząd
+        {
+            for(int j=0;j<liczba;j++)   //kolumna
+            {
+                if(i<=j)        //graf jest acykliczny jeżeli macierz sąsiedztwa jest górnotrójkątna
+                {
+                    graf[i][j]=rand()%2;        //dla górnego trójkąta wartości mogą być 0 lub 1
+                }
+                else graf[i][j]=0;      //dla reszty musi być 0
+            }
+        }
+
+        //wypisywanie grafu na konsoli
+        for(int i=0;i<liczba;i++)       //rząd
+        {
+            for(int j=0;j<liczba;j++)   //kolumna
+            {
+                cout<<graf[i][j]<<" ";
+            }
+            cout<<endl;
+        }
 
 
 
@@ -75,6 +112,23 @@ int main()                                                              //main
                 nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        //zwalnianie pamięci
+        for (int x=0;x<liczba;x++)          //zwalniamy pamięć po kolumnach tablicy
+        delete [] graf[x];
+
+        delete [] graf;                     //i w końcu cały graf
     }
 
 
