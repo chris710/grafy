@@ -10,9 +10,7 @@ using namespace std;
 
 //          DO ZROBIENIA:
 //
-//      NAJPIERW MA BYĆ MACIERZ SĄSIEDZTWA!!! RESZTĄ SIĘ ZBYTNIO NIE PRZEJMUJ, BO I TAK BĘDZIE TRZEBA JĄ WYWALIĆ/ZMODYFIKOWAĆ
-//
-//  przydałoby się jakoś ustalić gęstość grafu na 50% a nei losowo jak jest teraz
+//  zmodyfikować listę następników aby odwzorowywała graf z macierzy
 //  3)  lista krawędzi zapisana jako tabela
 //  4)  sortowanie topologiczne (zgodnie z algorytmem przeszukiwania w głąb)
 //  5)  i magiczny zegarek mierzący ile to zajmuje
@@ -61,14 +59,16 @@ int main()                                                              //main
             graf[x]=new int[liczba];            //jest to dynamiczna tablica
         }
 
-        //zapełnianie macierzy losowymi danymi
+        //zapełnianie macierzy danymi
         for(int i=0;i<liczba;i++)       //rząd
         {
             for(int j=0;j<liczba;j++)   //kolumna
             {
-                if(i<=j)        //graf jest acykliczny jeżeli macierz sąsiedztwa jest górnotrójkątna
+                //graf jest acykliczny jeżeli macierz sąsiedztwa jest górnotrójkątna
+                if(i<j)    graf[i][j]=1;       //górny trójkąt ma same 1; dzięki temu graf jest spójny i spełnia warunki gęstości
+                else if(i==j)        //dla przekątnej wartości mogą być 0 lub 1
                 {
-                    graf[i][j]=rand()%2;        //dla górnego trójkąta wartości mogą być 0 lub 1
+                    graf[i][j]=rand()%2;
                 }
                 else graf[i][j]=0;      //dla reszty musi być 0
             }
@@ -87,7 +87,7 @@ int main()                                                              //main
 
 
 
-        //TO POD SPODEM NA PÓŹNIEJ, BO NIE DA SIĘ ZROBIĆ W TEN SPOSÓB GRAFU ACYKLICZNEGO, NAJPIERW MACIERZ
+        //to poniżej do modyfikacji aby odzwierciedlało graf z macierzy
         vertex* pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
 
         for(int i=0;i<liczba;i++)       //zapełniamy graf danymi
