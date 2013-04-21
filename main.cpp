@@ -9,12 +9,10 @@ using namespace std;
 
 
 //          DO ZROBIENIA:
-//
-//  wyświetlać listę następników
-//  3)  lista krawędzi zapisana jako tabela
 //  4)  sortowanie topologiczne (zgodnie z algorytmem przeszukiwania w głąb)
 //  5)  i magiczny zegarek mierzący ile to zajmuje
 //  6)  pętelka mierząca czas dla 10 wartości "liczba"
+
 
 
 //to niestety musi iść pierwsze choć wiem, że to nielogiczne trochę :(
@@ -30,24 +28,29 @@ struct vertex                                                           //strukt
 //i wracamy do określenia czym jest vneigh
 struct vneigh                                                           //"vertex neighbour" czyli kolejne pozycje na liście następników
 {
-    vertex* id;         //wskaźnik na sąsiada
+    vertex* id;         //wskaźnik na sąsiada (od niego będziemy brać wartość); dzięki temu wyszukiwanie będzie znacznie szybsze
     vneigh* next;       //wskaźnik na kolejnego sąsiada
 };
 
-
+struct arch                                                             //struktura łuku, do listy krawędzi
+{
+    vertex* prev;       //wskaźnik na źródło łuku
+    vertex* next;       //wskaźnik na ujście łuku
+};
 
 
 int main()                                                              //main
 {
     srand(NULL);
 
-    int liczba;         //liczba wierzchołków w tworzonym grafie
     bool dalej=true;    //flaga dla pętli programu; jeżeli staje się false to program zostaje przerwany
-
 
     while (dalej)       //pętla programu, dzięki temu można wykonać parę operacji bez wielokrotnego włączania programu
     {
-        cout<<"Podaj liczbe vertexow grafu"<<endl;      //prosimy użytkownika o liczbę danych
+        int arches=0;         //liczba łuków w tworzonym grafie
+        int liczba;         //liczba wierzchołków w tworzonym grafie
+
+        cout<<"Podaj liczbe wierzcholkow grafu"<<endl;      //prosimy użytkownika o liczbę danych
         cin>>liczba;
 
 
@@ -79,6 +82,7 @@ int main()                                                              //main
         }
 
         //wypisywanie grafu na konsoli
+        cout<<"Macierz sasiedztwa:"<<endl;
         for(int i=0;i<liczba;i++)       //rząd
         {
             for(int j=0;j<liczba;j++)   //kolumna
@@ -87,12 +91,14 @@ int main()                                                              //main
             }
             cout<<endl;
         }
+        cout<<endl;
 
 
 
         ////////////////////////////////////////////////////////
         //      LISTA NASTĘPNIKÓW
         ////////////////////////////////////////////////////////
+
         vertex* pierwszy = new vertex[liczba];       //tworzymy graf "pierwszy" zawierający "liczba" wierzchołków; jest to lista struktur
 
         //generujemy pierwszą kolumnę wierszy; jest to potrzebne, aby mieć odwołania do wszystkich elementów grafu
@@ -111,6 +117,7 @@ int main()                                                              //main
             {
                 if(graf[i][j])      //dodajemy łuk jeżeli jest połączenie
                 {
+                    arches++;           //to do listy krawędzi; zwiększamy już tutaj, bo zaraz będzie potrzebne
                     nnext->id=&pierwszy[j];     //nadajemy wskaźnik na element, do którego idzie łuk
                     nnext->next= new vneigh;        //tworzymy nową pozycję na liście następników
                     nnext=nnext->next;      //zmieniamy wskaźnik na kolejną pozycję
@@ -119,7 +126,9 @@ int main()                                                              //main
             if(nnext) nnext->next=NULL;     //ostatni element nullujemy żeby nie robił rozpierduchy przy wypisywaniu
         }
 
-        for(int i=0;i<liczba;i++)                   //wyświetlanie listy następników
+        //wyświetlanie listy następników
+        cout<<"Lista nastepnikow: "<<endl;
+        for(int i=0;i<liczba;i++)
         {
             cout<<i;
             vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
@@ -129,12 +138,47 @@ int main()                                                              //main
                 nnext=nnext->next;
             }
             cout<<endl;
+        }
+        cout<<endl;
 
+
+
+        ////////////////////////////////////////////////////////
+        //      LISTA KRAWĘDZI
+        ////////////////////////////////////////////////////////
+
+        arch* drugi = new arch[arches];       //tworzymy graf "drugi"; jest to "arches"-elementowa lista struktur
+        int luk=0;      //zmienna określająca numer łuku; MUSI być zerowana za każdym razem!!!
+
+        //dane do grafu pobieramy z listy następników
+        for(int i=0;i<liczba;i++)
+        {
+            vneigh* nnext=pierwszy[i].next;       //wskaźnik na sąsiada wierzchołka
+            while(nnext->next!=NULL)        //dopóki na liście następników jest sąsiad twórz kolejne łuki
+            {
+                drugi[luk].prev=&pierwszy[i];       //przypisujemy źródło łuku
+                drugi[luk].next=nnext->id;          //i jego ujście
+                nnext=nnext->next;
+                luk++;                              //przechodzimy do następnego łuku
+            }
         }
 
+        //wyświetlanie listy krawędzi
+        cout<<"Lista krawedzi: "<<endl;
+        for(int i=0;i<arches;i++)
+        {
+                cout<<drugi[i].prev->id;       //początek krawędzi (z tego wierzchołka ona wychodzi
+                cout<<"->"<<drugi[i].next->id;      //koniec krawędzi (wartość wierzchołka, do którego ona wchodzi)
+                cout<<endl;
+        }
+        cout<<endl;
 
-        //zwalnianie pamięci
-        for (int x=0;x<liczba;x++)          //zwalniamy pamięć listy
+
+
+        ////////////////////////////////////////////////////////
+        //      ZWALNIANIE PAMIĘCI
+        ////////////////////////////////////////////////////////
+        for (int x=0;x<liczba;x++)          //zwalniamy pamięć listy    następników
         {
             vneigh* nnext=pierwszy[x].next;       //wskaźnik na sąsiada wierzchołka
             while(nnext->next!=NULL)        //póki nie koniec listy usuwaj kolejne jej elementy od początku licząc
@@ -145,6 +189,9 @@ int main()                                                              //main
             }
         }
         delete [] pierwszy;
+
+        delete [] drugi;                    //zwalniamy pamięć listy krawędzi;tu jest prosto, bo każda lista ma tylko 1 element, więc
+                                            //starczy usunąć tablicę struktur
 
         for (int x=0;x<liczba;x++)          //zwalniamy pamięć po kolumnach tablicy
             delete [] graf[x];
