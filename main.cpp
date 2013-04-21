@@ -75,7 +75,8 @@ int main()                                                              //main
                 if(i<j)    graf[i][j]=1;       //górny trójkąt ma same 1; dzięki temu graf jest spójny i spełnia warunki gęstości
                 else if(i==j)        //dla przekątnej wartości mogą być 0 lub 1, bo są to pętle jednoelementowe
                 {
-                    graf[i][j]=rand()%2;
+                    //graf[i][j]=rand()%2;
+                    graf[i][j]=0;
                 }
                 else graf[i][j]=0;      //dla reszty musi być 0
             }
